@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 class JWT {
   async accessToken(payload: any) {
     return await jwt.sign(payload, process.env.JWT_SECRET || "", {
-      expiresIn: "1s",
+      expiresIn: "1h",
     });
   }
 
@@ -12,7 +12,7 @@ class JWT {
       { id: payload, refresh: process.env.REFRESH_PAYLOAD || "" + new Date() },
       process.env.JWT_SECRET || "",
       {
-        expiresIn: "10s",
+        expiresIn: "2h",
       }
     );
   }
