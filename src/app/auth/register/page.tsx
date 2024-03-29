@@ -2,11 +2,13 @@
 
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useState } from "react";
 
 interface UserRegisterPageProps {}
 
 const UserRegisterPage = ({}: UserRegisterPageProps) => {
+  const router = useRouter();
   const [userInfo, setUserInfo] = useState({
     email: "",
     nickname: "",
@@ -19,7 +21,10 @@ const UserRegisterPage = ({}: UserRegisterPageProps) => {
       const response = await axios.post("/api/auth/register", {
         ...userInfo,
       });
-      console.log(response);
+
+      if (response.status === 201) {
+        router.push("/auth/login");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -29,7 +34,6 @@ const UserRegisterPage = ({}: UserRegisterPageProps) => {
     const {
       target: { value, name },
     } = e;
-    console.log(name);
     setUserInfo((prev) => ({ ...prev, [name]: value }));
   }, []);
 
@@ -39,7 +43,7 @@ const UserRegisterPage = ({}: UserRegisterPageProps) => {
       <form
         onSubmit={handleSignup}
         className="
-        flex flex-col gap-3 p-8 w-1/2 h-1/2 overflow-y-auto max-w-screen-sm min-w-fit min-h-fit border border-gray-200 rounded-lg shadow-lg"
+        flex flex-col gap-3 p-8 w-1/2 max-w-screen-sm min-w-fit min-h-fit border border-gray-200 rounded-lg shadow-lg"
       >
         <div className="flex flex-col gap-1 flex-none h-16">
           <label htmlFor="email">이메일</label>
@@ -61,6 +65,7 @@ const UserRegisterPage = ({}: UserRegisterPageProps) => {
             id="nickname"
             name="nickname"
             type="text"
+            autoComplete="username"
           />
         </div>
         <div className="flex flex-col gap-1 flex-none h-16">
@@ -72,7 +77,7 @@ const UserRegisterPage = ({}: UserRegisterPageProps) => {
             id="password"
             name="password"
             type="password"
-            autoComplete={"cc-name webauthn"}
+            autoComplete={"current-password"}
           />
         </div>
         <div className="flex flex-col mt-5 justify-center flex-1">

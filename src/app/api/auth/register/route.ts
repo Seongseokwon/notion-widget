@@ -16,10 +16,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const { hashedPassword, ...witdrawPassword } = response;
-    return NextResponse.json(witdrawPassword);
-  } catch (err) {
-    console.log(err);
+    const { hashedPassword, ...removePw } = response;
+    return new NextResponse("Register Success", { status: 201 });
+  } catch (err: any) {
+    console.log(err.meta);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

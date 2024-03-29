@@ -15,7 +15,7 @@ const LoginPage = ({}: LoginPageProps) => {
       <h2 className="text-center font-semibold text-3xl">로그인</h2>
       <form
         onSubmit={handleLogin}
-        className="flex flex-col gap-3 p-8 w-1/2 h-1/2 max-w-screen-sm border border-gray-200 rounded-lg shadow-lg"
+        className="flex flex-col gap-3 p-8 w-1/2 max-w-screen-sm border border-gray-200 rounded-lg shadow-lg"
       >
         <div className="flex flex-col gap-2 flex-none h-20">
           <label htmlFor="email">이메일</label>
@@ -31,6 +31,7 @@ const LoginPage = ({}: LoginPageProps) => {
             className="border border-gray-200 py-2 rounded-lg px-1"
             id="password"
             type="password"
+            autoComplete={"current-password"}
           />
         </div>
         <div className="flex flex-col gap-2 justify-center flex-1">
