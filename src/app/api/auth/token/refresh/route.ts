@@ -3,6 +3,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
+import { generateToken, returnResponseWithToken } from "../../(common)/token";
 export async function POST(req: NextRequest) {
   try {
     const headerList = headers();
@@ -27,13 +28,10 @@ export async function POST(req: NextRequest) {
     }
     const { hashedPassword, ...other } = findUser;
 
-    const accessToken = await jwt.accessToken(other);
-    const refreshToken = await jwt.refreshToken(other.id);
-
-    const response = new NextResponse("Token Update Success", { status: 200 });
-    response.headers.set("access-token", accessToken);
-    response.headers.set("refresh-token", refreshToken);
-    return response;
+    return returnResponseWithToken(
+      await generateToken(other),
+      "Token Update Success"
+    );
   } catch (err) {
     return new NextResponse("Refresh token is expired", { status: 500 });
   }
