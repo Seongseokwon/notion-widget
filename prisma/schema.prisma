@@ -28,18 +28,20 @@ model Widget {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  type   WidgetObject?
   userId String
-  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  widgetObject   WidgetObject @relation(fields: [widgetObjectId], references: [id])
+  widgetObjectId String       @unique
 }
 
 model WidgetObject {
   id         String   @id @default(cuid())
   type       String
+  name       String
   attributes Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  widget   Widget @relation(fields: [widgetId], references: [id])
-  widgetId String @unique
+  widget Widget?
 }
