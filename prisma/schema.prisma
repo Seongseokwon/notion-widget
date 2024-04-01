@@ -14,8 +14,32 @@ datasource db {
 }
 
 model User {
-  id             String @id @default(cuid())
-  email          String @unique
+  id             String   @id @default(cuid())
+  email          String   @unique
   nickname       String
   hashedPassword String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  widgets        Widget[]
+}
+
+model Widget {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  type   WidgetObject?
+  userId String
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WidgetObject {
+  id         String   @id @default(cuid())
+  type       String
+  attributes Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  widget   Widget @relation(fields: [widgetId], references: [id])
+  widgetId String @unique
 }
