@@ -6,7 +6,7 @@ interface WidgetLayoutProps {
 }
 
 const WidgetLayout = ({ children }: WidgetLayoutProps) => {
-  return <Container>{children}</Container>;
+  return <>{children}</>;
 };
 
 export default WidgetLayout;

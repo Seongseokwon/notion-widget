@@ -15,11 +15,6 @@ const SelectWidget = ({}: SelectWidgetProps) => {
         "
         >
           <WidgetPreviewBox />
-          <WidgetPreviewBox />
-          <WidgetPreviewBox />
-          <WidgetPreviewBox />
-          <WidgetPreviewBox />
-          <WidgetPreviewBox />
         </div>
       </section>
     </div>
