@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
     const response = new NextResponse("Login Success", { status: 200 });
     response.headers.set("access-token", accessToken);
     response.headers.set("refresh-token", refreshToken);
+    response.cookies.set("UAT", accessToken);
+    response.cookies.set("URT", refreshToken);
     return response;
   } catch (err) {
     console.log(err);
