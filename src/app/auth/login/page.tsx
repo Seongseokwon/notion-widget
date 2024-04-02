@@ -1,6 +1,7 @@
 "use client";
 
 import { customAxios } from "@/libs/axios";
+import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -13,7 +14,7 @@ const LoginPage = ({}: LoginPageProps) => {
     email: "",
     password: "",
   });
-
+  const { setUser } = useAuthStore();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const {
       target: { name, value },
@@ -32,6 +33,7 @@ const LoginPage = ({}: LoginPageProps) => {
         customAxios.setAuthorization(response.headers["access-token"]);
         localStorage.setItem("UAT", response.headers["access-token"]);
         localStorage.setItem("URT", response.headers["refresh-token"]);
+        setUser(response.data.user);
         router.push("/widget");
       }
     } catch (err: any) {

@@ -1,26 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import WidgetPreviewBox from "../../components/WidgetPreviewBox";
 import { useRouter } from "next/navigation";
+
+import WidgetLoading from "./WidgetLoading";
+import { customAxios } from "@/libs/axios";
 import { Widget } from "@prisma/client";
 
 interface SelectWidgetProps {
   setStep: () => void;
-  widgets: Widget[];
 }
 
-const SelectWidget = ({ widgets, setStep }: SelectWidgetProps) => {
+const SelectWidget = ({ setStep }: SelectWidgetProps) => {
   const router = useRouter();
+  const [widgets, setWidgets] = useState<Widget[]>([]);
   const [selectItem, setSelectItem] = useState<
     Record<string, any> | undefined
   >();
+  const [isLoading, setIsLoading] = useState(true);
+  const getWidgetList = async () => {
+    try {
+      const response = await customAxios.getInstance().get("/widgetObject");
+      setWidgets(() => response.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    getWidgetList();
+  }, []);
 
   const handleSelect = (item: any) => {
+    if (isLoading) return;
     setSelectItem(item);
   };
 
   const handleNextStep = () => {
     if (!selectItem) {
-      console.log("위젯을 선택하세요");
       return;
     }
     setStep();
@@ -28,22 +45,27 @@ const SelectWidget = ({ widgets, setStep }: SelectWidgetProps) => {
   return (
     <div className="flex flex-col h-full justify-between">
       <div>
-        <section className="mt-8">
-          <h3 className="mb-5 text-2xl font-semibold">시계</h3>
-          <div
-            className="flex flex-wrap gap-3 p-2
+        {isLoading ? (
+          <WidgetLoading widgetType="시계" />
+        ) : (
+          <section className="mt-8">
+            <h3 className="mb-5 text-2xl font-semibold">시계</h3>
+            <div
+              className="flex flex-wrap gap-3 p-2
         "
-          >
-            {widgets.map((widget) => (
-              <WidgetPreviewBox
-                key={widget.id}
-                widget={widget}
-                isSelected={widget.id === selectItem?.id}
-                selectItem={handleSelect}
-              />
-            ))}
-          </div>
-        </section>
+            >
+              {widgets?.map((widget) => (
+                <WidgetPreviewBox
+                  isLoading={false}
+                  key={widget.id}
+                  widget={widget}
+                  isSelected={widget.id === selectItem?.id}
+                  selectItem={handleSelect}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
 
       <div className="flex gap-3 pb-5 items-center justify-center">
