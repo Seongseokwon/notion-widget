@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import JWT from "@/libs/jwt";
-
-import prisma from "@/libs/prisma";
 import { generateToken, returnResponseWithToken } from "../(common)/token";
+import bcrypt from "bcrypt";
+import prisma from "@/libs/prisma";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -26,7 +24,10 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Wrong password", { status: 400 });
     }
 
-    return returnResponseWithToken(await generateToken(other), "Login Success");
+    return returnResponseWithToken(await generateToken(other), {
+      user: other,
+      message: "Login Success",
+    });
   } catch (err) {
     console.log(err);
     return new NextResponse("Internal server error", { status: 500 });

@@ -1,6 +1,12 @@
 import JWT from "@/libs/jwt";
+import { UserWithoutPw } from "@/types/user";
+import { User } from "@prisma/client";
 import { NextResponse } from "next/server";
 
+interface ResponseBody {
+  user: UserWithoutPw;
+  message: string;
+}
 export const generateToken = async (payload: any) => {
   const jwt = new JWT();
 
@@ -10,15 +16,16 @@ export const generateToken = async (payload: any) => {
   };
 };
 export const returnResponseWithToken = (
-  token: Record<string, any>,
-  message: string
+  token: Record<"accessToken" | "refreshToken", string>,
+  body: ResponseBody
 ) => {
-  const response = new NextResponse(message, { status: 200 });
+  const response = new NextResponse(JSON.stringify(body), { status: 200 });
   const { accessToken, refreshToken } = token;
 
   response.headers.set("access-token", accessToken);
   response.headers.set("refresh-token", refreshToken);
   response.cookies.set("UAT", accessToken);
   response.cookies.set("URT", refreshToken);
+
   return response;
 };

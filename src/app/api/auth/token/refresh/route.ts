@@ -14,9 +14,7 @@ export async function POST(req: NextRequest) {
 
     const jwt = new JWT();
     const [_, rToken] = headerList.get("Refresh")!.split(" ");
-    const verified = (await jwt.expiredCheck(rToken)) as JwtPayload;
-
-    const { id } = verified;
+    const { id } = (await jwt.expiredCheck(rToken)) as JwtPayload;
 
     const findUser = await prisma.user.findUnique({
       where: {
@@ -28,10 +26,10 @@ export async function POST(req: NextRequest) {
     }
     const { hashedPassword, ...other } = findUser;
 
-    return returnResponseWithToken(
-      await generateToken(other),
-      "Token Update Success"
-    );
+    return returnResponseWithToken(await generateToken(other), {
+      user: other,
+      message: "Token Update Success",
+    });
   } catch (err) {
     return new NextResponse("Refresh token is expired", { status: 500 });
   }
