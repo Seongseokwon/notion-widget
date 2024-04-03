@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import WidgetLoading from "./WidgetLoading";
 import { customAxios } from "@/libs/axios";
 import { Widget } from "@prisma/client";
+import { useWidgetStore } from "@/store/widgetStore";
 
 interface SelectWidgetProps {
   setStep: () => void;
@@ -13,10 +14,9 @@ interface SelectWidgetProps {
 const SelectWidget = ({ setStep }: SelectWidgetProps) => {
   const router = useRouter();
   const [widgets, setWidgets] = useState<Widget[]>([]);
-  const [selectItem, setSelectItem] = useState<
-    Record<string, any> | undefined
-  >();
   const [isLoading, setIsLoading] = useState(true);
+  const { widget: selectItem, selectWidget } = useWidgetStore();
+
   const getWidgetList = async () => {
     try {
       const response = await customAxios.getInstance().get("/widgetObject");
@@ -31,15 +31,13 @@ const SelectWidget = ({ setStep }: SelectWidgetProps) => {
     getWidgetList();
   }, []);
 
-  const handleSelect = (item: any) => {
+  const handleSelect = (item: Widget) => {
     if (isLoading) return;
-    setSelectItem(item);
+    selectWidget(item);
   };
 
   const handleNextStep = () => {
-    if (!selectItem) {
-      return;
-    }
+    if (!selectItem) return;
     setStep();
   };
   return (
