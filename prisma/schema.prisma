@@ -14,13 +14,24 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
+  id             String      @id @default(cuid())
+  email          String      @unique
   nickname       String
   hashedPassword String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
   widgets        Widget[]
+  accessCode     AccessCode?
+}
+
+model AccessCode {
+  id        Int      @id @default(autoincrement())
+  code      String   @unique @default(cuid())
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  expiredAt DateTime @default(dbgenerated("now() + interval '1 minute'"))
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
 }
 
 model Widget {
