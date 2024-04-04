@@ -4,25 +4,25 @@ import Container from "@/components/Container";
 import Header from "@/components/Header";
 import { customAxios } from "@/libs/axios";
 import { useRouter } from "next/navigation";
-import { Fragment } from "react";
+import { useEffect } from "react";
 
 interface WidgetPageProps {}
 
 const WidgetPage = ({}: WidgetPageProps) => {
   const router = useRouter();
 
-  const handleTest = async () => {
-    try {
-      const response = await customAxios.getInstance().get("/test");
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const createWidget = () => {
     router.push("/widget/generate");
   };
+
+  const getMyWidget = async () => {
+    const response = await customAxios.get("/widget");
+    console.log(response);
+  };
+
+  useEffect(() => {
+    getMyWidget();
+  }, []);
   return (
     <div className="flex flex-col h-full">
       <Header />
