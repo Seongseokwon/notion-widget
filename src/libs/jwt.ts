@@ -24,6 +24,14 @@ class JWT {
       throw err;
     }
   }
+
+  async decodeToken(token: string) {
+    try {
+      return await jwt.decode(token);
+    } catch (err) {
+      throw err;
+    }
+  }
 }
 
 export default JWT;
